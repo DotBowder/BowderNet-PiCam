@@ -53,6 +53,7 @@ TITLE=$C_3
 TEXTA=$C_7
 TEXTB=$NC
 GREETING=$NC
+PANIC=$C_1
 
 echo "$LIME $L_GREY $YELLOW"
 
@@ -62,7 +63,7 @@ FF="${FILE}$0:"
 
 # Error Exit
 function panic(){
-  echo "$FF${RED} Fatal Error, Aborting Program! ${NC}"
+  echo "$FF${PANIC} Fatal Error, Aborting Program! ${NC}"
   exit -1
 }
 
@@ -102,25 +103,25 @@ function time_left(){
       REC_MINUTES=0
       REC_SECONDS=$(( $vid_length / 1000 ))
   else
-    overnight=$(( 24 - toggle_pm + toggle_am ))
+    overnight=$(( 24 - ${toggle_pm} + ${toggle_am} ))
     echo "$FF${TEXTA} Calculating time until stream toggle...${NC}"
     if [ "$HOUR" -lt "$toggle_am" ]; then
-      REC_HOURS=$(( toggle_am - HOUR - 1))
-      REC_MINUTES=$(( 60 - MINUTE - 1))
-      REC_SECONDS=$(( 60 - SECOND))
+      REC_HOURS=$(( ${toggle_am} - ${HOUR} - 1))
+      REC_MINUTES=$(( 60 - ${MINUTE} - 1))
+      REC_SECONDS=$(( 60 - ${SECOND}))
     elif [[ "$HOUR" -ge "$toggle_am" && "$HOUR" -lt "$toggle_pm" ]]; then
-      REC_HOURS=$(( toggle_pm - HOUR - 1))
-      REC_MINUTES=$(( 60 - MINUTE - 1))
-      REC_SECONDS=$(( 60 - SECOND))
+      REC_HOURS=$(( ${toggle_pm} - ${HOUR} - 1))
+      REC_MINUTES=$(( 60 - ${MINUTE} - 1))
+      REC_SECONDS=$(( 60 - ${SECOND}))
     elif [ "$HOUR" -ge "$toggle_pm" ]; then
-      REC_HOURS=$(( overnight + toggle_pm - HOUR - 1))
-      REC_MINUTES=$(( 60 - MINUTE - 1))
-      REC_SECONDS=$(( 60 - SECOND))
+      REC_HOURS=$(( ${overnight} + ${toggle_pm} - ${HOUR} - 1))
+      REC_MINUTES=$(( 60 - ${MINUTE} - 1))
+      REC_SECONDS=$(( 60 - ${SECOND}))
     fi
-    HOUR_TO_MILISEC=$(( $(( $(( REC_HOURS * 60)) * 60 )) * 1000))
-    MIN_TO_MILISEC=$(( $(( REC_MINUTES * 60 )) * 1000))
-    SEC_TO_MILI_SEC=$(( REC_SECONDS * 1000))
-    REC_TOTAL_MS=$(( HOUR_TO_MILISEC + MIN_TO_MILISEC + SEC_TO_MILI_SEC))
+    HOUR_TO_MILISEC=$(( $(( $(( ${REC_HOURS} * 60)) * 60 )) * 1000))
+    MIN_TO_MILISEC=$(( $(( ${REC_MINUTES} * 60 )) * 1000))
+    SEC_TO_MILI_SEC=$(( ${REC_SECONDS} * 1000))
+    REC_TOTAL_MS=$(( ${HOUR_TO_MILISEC} + ${MIN_TO_MILISEC} + ${SEC_TO_MILI_SEC}))
     echo "$FF${TEXTA} Time Left: ${TEXTB}${REC_HOURS}:${REC_MINUTES}:${REC_SECONDS}${NC}"
     echo "$FF${TEXTA} Time Left(ms): ${TEXTB}${REC_TOTAL_MS}${NC}"
     vid_legth=$REC_TOTAL_MS
@@ -178,7 +179,7 @@ function watch_stream(){
 
 function record_stream(){
   echo "$FF${TEXTA} Recording Raspivid Stream...${NC}"
-  COMMAND="ffmpeg -loglevel quiet -i tcp://$pi_hostname:$socket_port -vcodec copy -f flv $vid_record_dir$FILENAME.flv -y"
+  COMMAND="ffmpeg -loglevel quiet -i tcp://$pi_hostname:$socket_port -vcodec copy -t $(($vid_length - 2)) -f flv $vid_record_dir$FILENAME.flv -y"
   COMMAND="ffmpeg -i tcp://$pi_hostname:$socket_port -vcodec copy -f flv $vid_record_dir$FILENAME.flv -y"
   echo "$FF${TEXTA} Command: ${TEXTB}'${COMMAND}' ${NC}"
   echo ""
@@ -201,6 +202,7 @@ echo ""
 # Command line Variables
 
 # Command line Variables
+echo "$FF${TITLE} Processing User Defined Options ${NC}"
 while getopts ":l:b:i:p:h:v:cwr" opt; do
   case $opt in
     l)
@@ -221,7 +223,7 @@ while getopts ":l:b:i:p:h:v:cwr" opt; do
     p)
       #echo "$FF${TEXTA} Option switched on: ${TEXTB}-p ${OPTARG} ${NC}" >&2
       socket_port=${OPTARG}
-      echo "$FF${TEXTB} -p ${TEXTA}Connection port adjusted to: ${TEXTB}${OPTARG} ${NC}" >&2
+      echo "$FF${TEXTB} -p ${TEXTA}Connection port adjusted to: ${TEXTB}${OPTARG} (tcp) ${NC}" >&2
       ;;
     h)
       #echo "$FF${TEXTA} Option switched on: ${TEXTB}-h ${OPTARG} ${NC}" >&2
@@ -234,7 +236,7 @@ while getopts ":l:b:i:p:h:v:cwr" opt; do
     c)
       #echo "$FF${TEXTA} Option switched on: ${TEXTB}-c ${NC}" >&2
       continuous=1
-      echo "$FF${TEXTB} -c ${TEXTA}Continuous mode adjusted to: ${TEXTB}${OPTARG} ${NC}" >&2
+      echo "$FF${TEXTB} -c ${TEXTA}Continuous mode adjusted to: ${TEXTB}true ${NC}" >&2
       ;;
     w)
       #echo "$FF${TEXTA} Option switched on: ${TEXTB}-w ${NC}" >&2
@@ -247,7 +249,8 @@ while getopts ":l:b:i:p:h:v:cwr" opt; do
       echo "$FF${TEXTB} -r ${TEXTA}Client mode adjusted to: ${TEXTB}record ${NC}" >&2
       ;;
     \?)
-      echo "$FF${TEXTA} An invalid option was used: ${TEXTB}-$OPTARG ${NC}" >&2
+      echo "$FF${PANIC} An invalid option was used: ${TEXTB}-$OPTARG ${NC}" >&2
+      panic
       ;;
   esac
     # :)
@@ -285,11 +288,12 @@ do
   echo ""
 
   echo "$FF${TITLE} Calculate Time Until Screen Toggle ${NC}"
-  REC_HOURS=""
-  REC_MINUTES=""
-  REC_SECONDS=""
-  REC_TOTAL_MS=""
-  time_left
+  echo "$FF${PANIC} Skipping Calculation ${NC}"
+  #REC_HOURS=""
+  #REC_MINUTES=""
+  #REC_SECONDS=""
+  #REC_TOTAL_MS=""
+  #time_left
   echo ""
 
   echo "$FF${TITLE} Set Video Brightness ${NC}"
