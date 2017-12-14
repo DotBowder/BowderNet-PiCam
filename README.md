@@ -3,9 +3,9 @@
 
 BowderNet PiCam is designed to automate the process of recording or watching video from your raspberry pi camera.
 
-### Prerequisites
+### Prerequisites:
 
-Dependencies:
+```
   Raspberry Pi
     - Camera Enabled
     - SSH Enabled
@@ -19,10 +19,10 @@ Dependencies:
   SSH Key
     * If you do not have an SSH key authorized on your raspberry pi, you need to generate one.
     * The process is described here: http://sshkeychain.sourceforge.net/mirrors/SSH-with-Keys-HOWTO/SSH-with-Keys-HOWTO-4.html
+```
 
-### Installing
+### Usage:
 
-Usage:
 Start in the local directory of the file. There is some code that depends on being in that directory.
 
 ./PiCam.sh [options]  
