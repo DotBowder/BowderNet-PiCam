@@ -146,9 +146,10 @@ function set_brightness(){
 
 function kill_stream_raspivid(){
   echo "$FF${TEXTA} Open Pi Secure Shell... ${NC}"
-  response=$(ssh -f -i $identity_file $pi_username@$pi_hostname "ps -A | grep raspivid | cut -d' ' -f 2")
-  if [[ $response != "" ]]; then
-    echo "$FF${TEXTA} Found existing stream. Killing Stream... ${NC}"
+  response=$(ssh -f -i $identity_file $pi_username@$pi_hostname "ps -A | grep raspivid | cut -d' ' -f 1")
+  #echo $response
+  if [[ $response != "?" && $response != " " && $response != "" ]]; then
+      echo "$FF${TEXTA} Found existing stream. Killing Stream... ${NC}"
     ssh -f -i $identity_file $pi_username@$pi_hostname "kill -9 $response"
   else
     echo "$FF${TEXTA} Found no existing streams.${NC}"
@@ -184,7 +185,7 @@ function record_stream(){
   echo "$FF${TEXTA} Command: ${TEXTB}'${COMMAND}' ${NC}"
   echo ""
   $COMMAND
-  echo "$FF${TEXTA} Saved File: $vid_record_dir$FILENAME.flv ${NC}"
+  echo "$FF${TEXTA} Saved File: ${TEXTB}$vid_record_dir$FILENAME.flv ${NC}"
 
 
 }
