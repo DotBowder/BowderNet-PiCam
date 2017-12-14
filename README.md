@@ -6,7 +6,7 @@ Usage:
 # Start in the local directory of the file. There is some code that depends on being in that directory.
 ==========================================================================================================
 ./PiCam.sh [options]  
-==========================
+==========================================================================================================
 -l [miliseconds]         : eg(-l 30000)              # Video length will be 30 seconds
 -b [bitrate]             : eg(-b 1000000)            # Video bitrate will be 1Mbps
 -i [identity file]       : eg(-i /keys/mykey)        # Key used for SSH will be /keys/mykey
@@ -28,7 +28,7 @@ Dependencies:
     - Camera Enabled
     - SSH Enabled
     - Workstation SSH Key added to authorized keys file (typically /home/pi/.shh/authorized_keys)
-    
+
   Workstation
     - ffmpeg for recording video to file
     - ffplay for playing video on screen
@@ -37,4 +37,3 @@ Dependencies:
   SSH Key
     * If you do not have an SSH key authorized on your raspberry pi, you need to generate one.
     * The process is described here: http://sshkeychain.sourceforge.net/mirrors/SSH-with-Keys-HOWTO/SSH-with-Keys-HOWTO-4.html
-  

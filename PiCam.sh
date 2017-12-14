@@ -228,11 +228,13 @@ while getopts ":l:b:i:p:h:v:cwr" opt; do
       ;;
     h)
       #echo "$FF${TEXTA} Option switched on: ${TEXTB}-h ${OPTARG} ${NC}" >&2
-      echo "$FF${TEXTB} -h ${TEXTA} ____ adjusted to: ${TEXTB}${OPTARG} ${NC}" >&2
+      echo "$FF${TEXTB} -h ${TEXTA} Pi hostname/IP adjusted to: ${TEXTB}${OPTARG} ${NC}" >&2
+      pi_hostname=${OPTARG}
       ;;
-    v)
+    d)
       #echo "$FF${TEXTA} Option switched on: ${TEXTB}-v ${OPTARG} ${NC}" >&2
-      echo "$FF${TEXTB} -v ${TEXTA} ____ adjusted to: ${TEXTB}${OPTARG} ${NC}" >&2
+      echo "$FF${TEXTB} -d ${TEXTA} Video record directory adjusted to: ${TEXTB}${OPTARG} ${NC}" >&2
+      vid_record_dir=${OPTARG}
       ;;
     c)
       #echo "$FF${TEXTA} Option switched on: ${TEXTB}-c ${NC}" >&2
