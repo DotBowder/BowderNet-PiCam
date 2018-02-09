@@ -23,7 +23,7 @@ BowderNet PiCam is designed to automate the process of recording or watching vid
 
 ### Usage:
 
-Start in the local directory of the file. There is some code that depends on being in that directory.
+Start in the local directory of the PiCam.sh file. There is some code that depends on being in that directory.
 
 ./PiCam.sh [options]  
 ```
