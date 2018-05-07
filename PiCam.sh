@@ -90,7 +90,7 @@ function set_date(){
   YEAR=$(date +%Y)
   MONTH=$(date +%m)
   DAY=$(date +%d)
-  HOUR=$(date +%H)
+  HOUR=$(date +%H | cut -d0 -f 2)
   MINUTE=$(date +%M)
   SECOND=$(date +%S)
   echo "$FF${TEXTA} Date: ${TEXTB}${YEAR}/${MONTH}/${DAY} ${HOUR}:${MINUTE}:${SECOND}${NC}"
